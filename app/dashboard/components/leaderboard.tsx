@@ -2,43 +2,75 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, TrendingUp, TrendingDown, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-
-const leaders = [
-    {
-        name: "Jean Dupont",
-        rank: 1,
-        level: "Bronze",
-        amount: "125,000 FCFA",
-        avatar: "/avatars/01.png",
-        bg: "bg-red-50",
-        badge: null,
-    },
-    {
-        name: "Maria Cissé",
-        rank: 2,
-        level: "Bronze",
-        amount: "87,000 FCFA",
-        avatar: "/avatars/02.png",
-        bg: "bg-amber-50",
-        badge: "2º",
-        badgeColor: "bg-amber-600",
-    },
-    {
-        name: "Nicolas Diallo",
-        rank: 3,
-        level: "Bronze",
-        amount: "52,500 FCFA",
-        avatar: "/avatars/03.png",
-        bg: "bg-orange-50",
-        badge: "3º",
-        badgeColor: "bg-orange-600",
-    },
-]
+import { useEffect, useState } from "react"
+import { useAuth } from "@/hooks/use-auth"
+import { getTransactionsByPartnerId } from "@/lib/firestore-helpers"
+import type { Transaction } from "@/lib/types"
+import Link from "next/link"
 
 export function Leaderboard() {
+    const { partner } = useAuth()
+    const [transactions, setTransactions] = useState<Transaction[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (!partner?.id) {
+            setLoading(false)
+            return
+        }
+
+        const loadTransactions = async () => {
+            try {
+                const allTransactions = await getTransactionsByPartnerId(partner.id)
+                // Get last 3 transactions
+                setTransactions(allTransactions.slice(0, 3))
+            } catch (error) {
+                console.error("Error loading transactions:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadTransactions()
+    }, [partner?.id])
+
+    const formatCurrency = (amount: number) => {
+        return `${amount.toLocaleString("fr-FR")} FCFA`
+    }
+
+    const formatDate = (timestamp: any) => {
+        if (!timestamp?.seconds) return "N/A"
+        return new Date(timestamp.seconds * 1000).toLocaleDateString("fr-FR", {
+            day: "2-digit",
+            month: "short",
+        })
+    }
+
+    const getTransactionIcon = (type: string) => {
+        switch (type) {
+            case "commission":
+                return TrendingUp
+            case "withdrawal":
+                return TrendingDown
+            default:
+                return Wallet
+        }
+    }
+
+    const getTransactionColor = (type: string) => {
+        switch (type) {
+            case "commission":
+                return { bg: "bg-green-50", text: "text-green-600" }
+            case "withdrawal":
+                return { bg: "bg-red-50", text: "text-red-600" }
+            default:
+                return { bg: "bg-blue-50", text: "text-blue-600" }
+        }
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -51,36 +83,46 @@ export function Leaderboard() {
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
                     <div className="space-y-4 flex-1">
-                        {leaders.map((leader, index) => (
-                            <div key={index} className={`flex items-center justify-between p-3 rounded-xl ${leader.bg}`}>
-                                <div className="flex items-center gap-3">
-                                    <div className="relative">
-                                        {leader.badge ? (
-                                            <div className={`w-8 h-8 rounded-full ${leader.badgeColor} text-white flex items-center justify-center font-bold text-sm shadow-md`}>
-                                                {leader.badge}
-                                            </div>
-                                        ) : (
-                                            <Avatar className="w-10 h-10 border-2 border-white shadow-sm">
-                                                <AvatarImage src={leader.avatar} />
-                                                <AvatarFallback>JD</AvatarFallback>
-                                            </Avatar>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-sm">{leader.name}</p>
-                                        <p className="text-xs text-muted-foreground">{leader.level}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <span className="text-sm font-bold text-red-600 block bg-red-100 px-2 py-0.5 rounded text-[10px]">{leader.amount}</span>
-                                </div>
+                        {loading ? (
+                            <div className="text-center py-4 text-muted-foreground">Chargement...</div>
+                        ) : transactions.length === 0 ? (
+                            <div className="text-center py-8 text-muted-foreground">
+                                <p className="text-sm">Aucune transaction pour le moment</p>
                             </div>
-                        ))}
+                        ) : (
+                            transactions.map((transaction, index) => {
+                                const Icon = getTransactionIcon(transaction.type)
+                                const colors = getTransactionColor(transaction.type)
+
+                                return (
+                                    <div key={transaction.id} className={`flex items-center justify-between p-3 rounded-xl ${colors.bg}`}>
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2 rounded-full bg-white`}>
+                                                <Icon className={`w-5 h-5 ${colors.text}`} />
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-sm capitalize">{transaction.type}</p>
+                                                <p className="text-xs text-muted-foreground">{formatDate(transaction.createdAt)}</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className={`text-sm font-bold block ${colors.text}`}>
+                                                {transaction.type === "withdrawal" ? "-" : "+"}
+                                                {formatCurrency(transaction.amount)}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground capitalize">{transaction.status}</span>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        )}
                     </div>
-                    <Button variant="ghost" className="w-full mt-4 text-red-600 hover:text-red-700 hover:bg-red-50 gap-1 font-medium group">
-                        Voir classement
-                        <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                    </Button>
+                    <Link href="/dashboard/historique">
+                        <Button variant="ghost" className="w-full mt-4 text-red-600 hover:text-red-700 hover:bg-red-50 gap-1 font-medium group">
+                            Voir tout l'historique
+                            <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                    </Link>
                 </CardContent>
             </Card>
         </motion.div>

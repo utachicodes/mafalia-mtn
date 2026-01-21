@@ -14,9 +14,16 @@ import {
     ChevronDown,
     Video,
     Briefcase,
-    BookOpen
+    BookOpen,
+    History,
+    Users,
+    TrendingUp,
+    Wallet
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAuth } from "@/hooks/use-auth"
+import { getRankColor, getRankBgColor } from "@/lib/scoring"
+import Image from "next/image"
 
 function NavItem({
     icon: Icon,
@@ -61,9 +68,23 @@ export default function DashboardLayout({
 }) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const pathname = usePathname()
+    const { partner, logout } = useAuth()
 
     // Helper to check if a route is active
     const isActive = (path: string) => pathname === path || pathname?.startsWith(path + "/")
+
+    const getInitials = (firstName?: string, lastName?: string) => {
+        if (!firstName || !lastName) return "PA"
+        return `${firstName[0]}${lastName[0]}`.toUpperCase()
+    }
+
+    const handleLogout = async () => {
+        try {
+            await logout()
+        } catch (error) {
+            console.error("Logout error:", error)
+        }
+    }
 
     return (
         <div className="min-h-screen bg-gray-50/50 flex font-dm-sans">
@@ -75,18 +96,15 @@ export default function DashboardLayout({
                 <div className="flex flex-col h-full bg-gradient-to-b from-red-600 to-red-700">
                     <div className="p-6 border-b border-white/10">
                         <div className="flex items-center gap-2">
-                            <div className="relative w-28 h-8">
-                                <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
-                                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-red-600">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" />
-                                        </svg>
-                                    </div>
-                                    mafalia
-                                </div>
-                            </div>
+                            <Image
+                                src="/mafalia-logo-white.svg"
+                                alt="Mafalia"
+                                width={120}
+                                height={40}
+                                className="h-10 w-auto"
+                            />
                         </div>
-                        <p className="text-white/60 text-xs font-semibold tracking-widest mt-1 ml-10">PARTENAIRE</p>
+                        <p className="text-white/60 text-xs font-semibold tracking-widest mt-2">PARTENAIRE</p>
                     </div>
 
                     <nav className="flex-1 p-4 overflow-y-auto">
@@ -99,6 +117,21 @@ export default function DashboardLayout({
                             </Link>
                         </div>
 
+                        <NavGroup label="Gestion">
+                            <Link href="/dashboard/historique">
+                                <NavItem icon={History} label="Historique" active={isActive("/dashboard/historique")} />
+                            </Link>
+                            <Link href="/dashboard/clients-roles">
+                                <NavItem icon={Users} label="Clients et Rôles" active={isActive("/dashboard/clients-roles")} />
+                            </Link>
+                            <Link href="/dashboard/performance">
+                                <NavItem icon={TrendingUp} label="Performance" active={isActive("/dashboard/performance")} />
+                            </Link>
+                            <Link href="/dashboard/commission-retrait">
+                                <NavItem icon={Wallet} label="Commission & Retrait" active={isActive("/dashboard/commission-retrait")} />
+                            </Link>
+                        </NavGroup>
+
                         <NavGroup label="Tutoriels">
                             <Link href="/dashboard/presentations">
                                 <NavItem icon={Video} label="Présentations Virtuelles" active={isActive("/dashboard/presentations")} />
@@ -109,34 +142,20 @@ export default function DashboardLayout({
                             <Link href="/dashboard/sales-tools">
                                 <NavItem icon={Briefcase} label="Sales Tools" active={pathname === "/dashboard/sales-tools"} />
                             </Link>
-                            {/* Sub-items for Sales Tools visual representation (optional, as they are on the page) */}
-                            <div className="ml-4 pl-3 border-l border-white/10 space-y-1 mt-1">
-                                <Link href="/dashboard/sales-tools">
-                                    <span className="block px-2 py-1.5 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-colors">
-                                        Discours Commercial
-                                    </span>
-                                </Link>
-                                <Link href="/dashboard/sales-tools">
-                                    <span className="block px-2 py-1.5 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-colors">
-                                        Plaquette Mafalia
-                                    </span>
-                                </Link>
-                            </div>
                         </NavGroup>
 
                     </nav>
 
                     <div className="p-4 border-t border-white/10">
-                        <Link href="/">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10"
-                            >
-                                <LogOut className="w-4 h-4 mr-2" />
-                                Déconnexion
-                            </Button>
-                        </Link>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleLogout}
+                            className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10"
+                        >
+                            <LogOut className="w-4 h-4 mr-2" />
+                            Déconnexion
+                        </Button>
                     </div>
                 </div>
             </aside>
@@ -160,6 +179,10 @@ export default function DashboardLayout({
                             {pathname === "/dashboard/enrolement" && "Enrôlement"}
                             {pathname?.includes("presentations") && "Présentations"}
                             {pathname?.includes("sales-tools") && "Outils de Vente"}
+                            {pathname?.includes("historique") && "Historique"}
+                            {pathname?.includes("clients-roles") && "Clients et Rôles"}
+                            {pathname?.includes("performance") && "Performance"}
+                            {pathname?.includes("commission-retrait") && "Commission & Retrait"}
                         </h1>
                     </div>
 
@@ -173,12 +196,20 @@ export default function DashboardLayout({
 
                         <div className="flex items-center gap-3 pl-4 border-l border-gray-100">
                             <Avatar className="w-9 h-9 border border-gray-200">
-                                <AvatarImage src="/avatars/user.png" />
-                                <AvatarFallback className="bg-red-100 text-red-600">JD</AvatarFallback>
+                                <AvatarImage src={partner?.avatar} />
+                                <AvatarFallback className="bg-red-100 text-red-600">
+                                    {getInitials(partner?.firstName, partner?.lastName)}
+                                </AvatarFallback>
                             </Avatar>
                             <div className="hidden md:block">
-                                <p className="text-sm font-bold text-gray-800 leading-none">Jean Dupont</p>
-                                <p className="text-xs text-red-500 font-medium">Bronze</p>
+                                <p className="text-sm font-bold text-gray-800 leading-none">
+                                    {partner ? `${partner.firstName} ${partner.lastName}` : "Chargement..."}
+                                </p>
+                                {partner && (
+                                    <p className={`text-xs font-medium ${getRankColor(partner.rank)}`}>
+                                        {partner.rank}
+                                    </p>
+                                )}
                             </div>
                             <ChevronDown className="w-4 h-4 text-gray-400" />
                         </div>

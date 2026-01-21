@@ -4,105 +4,125 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Users, ShoppingBag, CheckCircle, Activity, CreditCard, TrendingUp, Wallet, Coins } from "lucide-react"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { db } from "@/lib/firebase"
-import { collection, onSnapshot } from "firebase/firestore"
+import { calculatePartnerStats } from "@/lib/firestore-helpers"
+import { useAuth } from "@/hooks/use-auth"
+import type { PartnerStats } from "@/lib/types"
 
-const stats = [
-    {
-        label: "Clients Enrôlés",
-        value: "0",
-        icon: Users,
-        color: "text-red-500",
-        bg: "bg-red-50",
-        border: "border-red-100",
-    },
-    {
-        label: "Commandes Générées",
-        value: "12",
-        icon: ShoppingBag,
-        color: "text-orange-500",
-        bg: "bg-orange-50",
-        border: "border-orange-100",
-    },
-    {
-        label: "Confirmées",
-        value: "8",
-        icon: CheckCircle,
-        color: "text-amber-500",
-        bg: "bg-amber-50",
-        border: "border-amber-100",
-    },
-    {
-        label: "Actives",
-        value: "4",
-        icon: Activity,
-        color: "text-blue-500",
-        bg: "bg-blue-50",
-        border: "border-blue-100",
-    },
-    {
-        label: "Paiements Complétés",
-        value: "5",
-        icon: CreditCard,
-        color: "text-green-500",
-        bg: "bg-green-50",
-        border: "border-green-100",
-    },
-    {
-        label: "Revenu Généré",
-        value: "1.250.000 FCFA",
-        icon: TrendingUp,
-        color: "text-emerald-500",
-        bg: "bg-emerald-50",
-        border: "border-emerald-100",
-    },
-    {
-        label: "Commission Totale Gagnée",
-        value: "125.000 FCFA",
-        icon: Coins,
-        color: "text-yellow-600",
-        bg: "bg-yellow-50",
-        border: "border-yellow-100",
-    },
-    {
-        label: "Commission",
-        value: "77.500 FCFA",
-        subValue: "+12,500 FCFA",
-        icon: Wallet,
-        color: "text-red-600",
-        bg: "bg-red-50",
-        border: "border-red-100",
-        isHighlight: true,
-    },
-]
+interface StatCard {
+    label: string
+    value: string
+    icon: React.ElementType
+    color: string
+    bg: string
+    border: string
+    isHighlight?: boolean
+    subValue?: string
+}
 
 export function StatsGrid() {
-    const [clientCount, setClientCount] = useState(0)
+    const { partner } = useAuth()
+    const [stats, setStats] = useState<PartnerStats | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "clients"), (snapshot) => {
-            setClientCount(snapshot.size)
+        if (!partner?.id) {
             setLoading(false)
-        })
-        return () => unsubscribe()
-    }, [])
+            return
+        }
 
-    const dynamicStats = stats.map(stat => {
-        if (stat.label === "Clients Enrôlés") {
-            return { ...stat, value: loading ? "..." : clientCount.toString() }
+        const loadStats = async () => {
+            try {
+                const partnerStats = await calculatePartnerStats(partner.id)
+                setStats(partnerStats)
+            } catch (error) {
+                console.error("Error loading stats:", error)
+            } finally {
+                setLoading(false)
+            }
         }
-        // Simulate dynamic revenue based on clients (e.g. 50,000 FCFA per client)
-        if (stat.label === "Revenu Généré") {
-            const revenue = clientCount * 50000
-            return { ...stat, value: loading ? "..." : `${revenue.toLocaleString()} FCFA` }
-        }
-        return stat
-    })
+
+        loadStats()
+        // Refresh stats every 30 seconds
+        const interval = setInterval(loadStats, 30000)
+        return () => clearInterval(interval)
+    }, [partner?.id])
+
+    const formatCurrency = (amount: number) => {
+        return `${amount.toLocaleString("fr-FR")} FCFA`
+    }
+
+    const statsCards: StatCard[] = [
+        {
+            label: "Clients Enrôlés",
+            value: loading ? "..." : stats?.totalClients.toString() || "0",
+            icon: Users,
+            color: "text-red-500",
+            bg: "bg-red-50",
+            border: "border-red-100",
+        },
+        {
+            label: "Commandes Générées",
+            value: loading ? "..." : stats?.totalOrders.toString() || "0",
+            icon: ShoppingBag,
+            color: "text-orange-500",
+            bg: "bg-orange-50",
+            border: "border-orange-100",
+        },
+        {
+            label: "Confirmées",
+            value: loading ? "..." : stats?.confirmedOrders.toString() || "0",
+            icon: CheckCircle,
+            color: "text-amber-500",
+            bg: "bg-amber-50",
+            border: "border-amber-100",
+        },
+        {
+            label: "Actives",
+            value: loading ? "..." : stats?.activeOrders.toString() || "0",
+            icon: Activity,
+            color: "text-blue-500",
+            bg: "bg-blue-50",
+            border: "border-blue-100",
+        },
+        {
+            label: "Paiements Complétés",
+            value: loading ? "..." : stats?.completedPayments.toString() || "0",
+            icon: CreditCard,
+            color: "text-green-500",
+            bg: "bg-green-50",
+            border: "border-green-100",
+        },
+        {
+            label: "Revenu Généré",
+            value: loading ? "..." : formatCurrency(stats?.totalRevenue || 0),
+            icon: TrendingUp,
+            color: "text-emerald-500",
+            bg: "bg-emerald-50",
+            border: "border-emerald-100",
+        },
+        {
+            label: "Commission Totale Gagnée",
+            value: loading ? "..." : formatCurrency(stats?.totalCommission || 0),
+            icon: Coins,
+            color: "text-yellow-600",
+            bg: "bg-yellow-50",
+            border: "border-yellow-100",
+        },
+        {
+            label: "Commission Disponible",
+            value: loading ? "..." : formatCurrency(stats?.availableCommission || 0),
+            subValue: stats?.pendingCommission ? `+${formatCurrency(stats.pendingCommission)}` : undefined,
+            icon: Wallet,
+            color: "text-red-600",
+            bg: "bg-red-50",
+            border: "border-red-100",
+            isHighlight: true,
+        },
+    ]
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {dynamicStats.map((stat, index) => (
+            {statsCards.map((stat, index) => (
                 <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}

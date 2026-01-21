@@ -8,13 +8,16 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
-
-import { ArrowLeft, Eye, EyeOff } from "lucide-react"
+import { useAuth } from "@/hooks/use-auth"
+import { ArrowLeft, Eye, EyeOff, AlertCircle } from "lucide-react"
+import { toast } from "sonner"
 
 export default function ConnexionPage() {
   const router = useRouter()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,10 +25,25 @@ export default function ConnexionPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError("")
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsLoading(false)
-    router.push("/dashboard")
+
+    try {
+      await login(formData.email, formData.password)
+      toast.success("Connexion réussie!")
+      router.push("/dashboard")
+    } catch (err: any) {
+      console.error("Login error:", err)
+      const errorMessage = err.code === "auth/invalid-credential" || err.code === "auth/user-not-found"
+        ? "Email ou mot de passe incorrect"
+        : err.code === "auth/too-many-requests"
+          ? "Trop de tentatives de connexion. Réessayez plus tard."
+          : "Une erreur s'est produite lors de la connexion"
+      setError(errorMessage)
+      toast.error(errorMessage)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -77,6 +95,13 @@ export default function ConnexionPage() {
               <p className="text-muted-foreground">Accédez à votre tableau de bord partenaire</p>
             </div>
 
+            {error && (
+              <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 flex items-center gap-2 text-red-800">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <p className="text-sm">{error}</p>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email">Adresse email</Label>
@@ -88,6 +113,7 @@ export default function ConnexionPage() {
                   onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                   required
                   className="rounded-xl"
+                  disabled={isLoading}
                 />
               </div>
 
@@ -107,11 +133,13 @@ export default function ConnexionPage() {
                     onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
                     required
                     className="rounded-xl"
+                    disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    disabled={isLoading}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
