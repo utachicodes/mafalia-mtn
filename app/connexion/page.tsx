@@ -38,7 +38,7 @@ export default function ConnexionPage() {
         ? "Email ou mot de passe incorrect"
         : err.code === "auth/too-many-requests"
           ? "Trop de tentatives de connexion. Réessayez plus tard."
-          : "Une erreur s'est produite lors de la connexion"
+          : err.message || "Une erreur s'est produite lors de la connexion"
       setError(errorMessage)
       toast.error(errorMessage)
     } finally {
