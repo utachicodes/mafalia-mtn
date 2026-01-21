@@ -370,7 +370,6 @@ export default function HomePage() {
               <div className="relative w-8 h-8">
                 <Image src="/mafalia-logo.svg" alt="Mafalia" fill className="object-contain" />
               </div>
-              <span className="font-semibold text-foreground">Mafalia</span>
             </div>
             <p className="text-sm text-muted-foreground">2026 Mafalia. Tous droits réservés.</p>
           </div>

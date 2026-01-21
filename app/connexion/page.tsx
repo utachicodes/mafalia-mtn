@@ -31,10 +31,10 @@ export default function ConnexionPage() {
   return (
     <div className="min-h-screen bg-background flex">
       <div className="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden">
-        <div className="relative z-10 flex flex-col justify-between p-12 text-primary-foreground">
-          <div className="flex items-center gap-2">
-            <div className="relative w-12 h-12">
-              <Image src="/mafalia-logo.svg" alt="Mafalia" fill className="object-contain" priority />
+        <div className="relative z-10 flex flex-col items-center justify-between p-12 text-primary-foreground">
+          <div className="w-full flex justify-center mb-8">
+            <div className="relative w-16 h-16">
+              <Image src="/mafalia-logo-white.svg" alt="Mafalia" fill className="object-contain" priority />
             </div>
           </div>
 

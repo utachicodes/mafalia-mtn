@@ -90,10 +90,10 @@ export default function InscriptionPage() {
   return (
     <div className="min-h-screen bg-background flex">
       <div className="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden">
-        <div className="relative z-10 flex flex-col justify-between p-12 text-primary-foreground">
-          <div className="flex items-center gap-2">
-            <div className="relative w-12 h-12">
-              <Image src="/mafalia-logo.svg" alt="Mafalia" fill className="object-contain" priority />
+        <div className="relative z-10 flex flex-col justify-between p-12 text-primary-foreground h-full">
+          <div className="w-full flex justify-center mb-8">
+            <div className="relative w-16 h-16">
+              <Image src="/mafalia-logo-white.svg" alt="Mafalia" fill className="object-contain" priority />
             </div>
           </div>
 
@@ -105,24 +105,38 @@ export default function InscriptionPage() {
             </p>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary-foreground/20 flex items-center justify-center text-sm font-medium">
+          <div className="space-y-8 relative">
+            {/* Connecting vertical line */}
+            <div className="absolute left-[19px] top-2 bottom-12 w-0.5 bg-primary-foreground/20" />
+
+            <div className="relative flex items-start gap-6 group">
+              <div className="relative z-10 w-10 h-10 rounded-full bg-white flex items-center justify-center text-lg font-bold text-primary shadow-lg flex-shrink-0 transition-transform group-hover:scale-110">
                 1
               </div>
-              <span>Inscrivez-vous gratuitement</span>
+              <div className="pt-1">
+                <p className="text-xl font-bold leading-tight">Inscrivez-vous gratuitement</p>
+                <p className="text-primary-foreground/70 text-sm mt-1">Créez votre compte partenaire</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary-foreground/20 flex items-center justify-center text-sm font-medium">
+
+            <div className="relative flex items-start gap-6 group">
+              <div className="relative z-10 w-10 h-10 rounded-full bg-white flex items-center justify-center text-lg font-bold text-primary shadow-lg flex-shrink-0 transition-transform group-hover:scale-110">
                 2
               </div>
-              <span>Enrôlez vos premiers clients</span>
+              <div className="pt-1">
+                <p className="text-xl font-bold leading-tight">Enrôlez vos premiers clients</p>
+                <p className="text-primary-foreground/70 text-sm mt-1">Sur Mafalia et Commercia</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary-foreground/20 flex items-center justify-center text-sm font-medium">
+
+            <div className="relative flex items-start gap-6 group">
+              <div className="relative z-10 w-10 h-10 rounded-full bg-white flex items-center justify-center text-lg font-bold text-primary shadow-lg flex-shrink-0 transition-transform group-hover:scale-110">
                 3
               </div>
-              <span>Gagnez des commissions</span>
+              <div className="pt-1">
+                <p className="text-xl font-bold leading-tight">Gagnez des commissions</p>
+                <p className="text-primary-foreground/70 text-sm mt-1">Générez des revenus récurrents</p>
+              </div>
             </div>
           </div>
         </div>
