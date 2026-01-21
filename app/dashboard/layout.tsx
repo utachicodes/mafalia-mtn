@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
 import {
     LayoutDashboard,
     UserPlus,
@@ -68,7 +69,24 @@ export default function DashboardLayout({
 }) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const pathname = usePathname()
-    const { partner, logout } = useAuth()
+    const { partner, logout, loading, isAuthenticated } = useAuth()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!loading && !isAuthenticated) {
+            router.push("/connexion")
+        }
+    }, [loading, isAuthenticated, router])
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+            </div>
+        )
+    }
+
+    if (!isAuthenticated) return null
 
     // Helper to check if a route is active
     const isActive = (path: string) => pathname === path || pathname?.startsWith(path + "/")
