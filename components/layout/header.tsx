@@ -12,25 +12,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
-const translations = {
-    FR: {
-        login: "Se connecter",
-        start: "Démarrer maintenant"
-    },
-    EN: {
-        login: "Login",
-        start: "Start Now"
-    },
-    AR: {
-        login: "تسجيل الدخول",
-        start: "ابدأ الآن"
-    }
-}
+import { useLanguage } from "@/contexts/language-context"
 
 export function Header() {
-    const [language, setLanguage] = React.useState<"FR" | "EN" | "AR">("FR")
-    const t = translations[language]
+    const { language, setLanguage, t } = useLanguage()
 
     return (
         <motion.header

@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { DM_Sans, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { LanguageProvider } from "@/contexts/language-context"
 import "./globals.css"
 
 const dmSans = DM_Sans({ subsets: ["latin"] })
@@ -25,7 +26,9 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${dmSans.className} antialiased`}>
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
         <Analytics />
       </body>
     </html>
