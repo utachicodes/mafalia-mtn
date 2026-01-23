@@ -82,13 +82,17 @@ export default function SalesToolsPage() {
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <Button variant="outline" className="w-full justify-between group hover:border-red-200 hover:bg-red-50 hover:text-red-700">
-                                    Aperçu
-                                    <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-red-500" />
+                                <Button variant="outline" className="w-full justify-between group hover:border-red-200 hover:bg-red-50 hover:text-red-700" asChild>
+                                    <a href="/documents/BROCHURE_COMMERCIALE_MAFALIA.pdf" target="_blank" rel="noopener noreferrer">
+                                        Aperçu
+                                        <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-red-500" />
+                                    </a>
                                 </Button>
-                                <Button className="w-full justify-between bg-red-600 hover:bg-red-700 text-white group">
-                                    Télécharger
-                                    <Download className="w-4 h-4 text-red-100 group-hover:text-white" />
+                                <Button className="w-full justify-between bg-red-600 hover:bg-red-700 text-white group" asChild>
+                                    <a href="/documents/BROCHURE_COMMERCIALE_MAFALIA.pdf" download="BROCHURE_COMMERCIALE_MAFALIA.pdf">
+                                        Télécharger
+                                        <Download className="w-4 h-4 text-red-100 group-hover:text-white" />
+                                    </a>
                                 </Button>
                             </div>
                         </div>
