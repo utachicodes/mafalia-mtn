@@ -13,10 +13,13 @@ export interface Partner {
     country: string
     region: string
     address: string
+    city?: string
     rank: PartnerRank
     score: number
     joinedAt: Timestamp
     avatar?: string
+    isCertified?: boolean
+    certificationDate?: Timestamp
 }
 
 export interface PartnerStats {

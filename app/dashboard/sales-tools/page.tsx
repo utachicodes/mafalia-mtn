@@ -14,42 +14,6 @@ export default function SalesToolsPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Discours Commercial Card */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 text-white relative overflow-hidden">
-                        <div className="relative z-10 flex items-start justify-between">
-                            <div>
-                                <div className="p-3 bg-white/10 rounded-xl w-fit mb-4">
-                                    <Briefcase className="w-6 h-6 text-white" />
-                                </div>
-                                <h3 className="text-xl font-bold mb-1">Discours Commercial</h3>
-                                <p className="text-gray-300 text-sm">Les arguments clés pour convaincre vos prospects</p>
-                            </div>
-                        </div>
-                        {/* Decorative pattern */}
-                        <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
-                    </div>
-
-                    <div className="p-6">
-                        <div className="space-y-4">
-                            <div className="prose prose-sm max-w-none text-gray-600 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <p className="font-medium text-gray-900 mb-2">Points Clés :</p>
-                                <ul className="space-y-2 list-disc pl-4">
-                                    <li>Opportunité unique de revenus récurrents</li>
-                                    <li>Plateforme technologique simple et intuitive</li>
-                                    <li>Accompagnement et formation continue</li>
-                                    <li>Réseau de partenaires dynamique</li>
-                                </ul>
-                            </div>
-
-                            <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white group">
-                                Télécharger le script complet
-                                <Download className="w-4 h-4 ml-2 group-hover:-translate-y-1 transition-transform" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-
                 {/* Plaquette Mafalia Card */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="bg-gradient-to-r from-red-600 to-red-700 p-6 text-white relative overflow-hidden">

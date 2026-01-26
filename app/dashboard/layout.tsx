@@ -19,8 +19,23 @@ import {
     History,
     Users,
     TrendingUp,
-    Wallet
+    Wallet,
+    Award,
+    User,
+    Settings,
+    Building2,
+    Check,
+    PlusCircle
 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuth } from "@/hooks/use-auth"
 import { getRankColor, getRankBgColor } from "@/lib/scoring"
@@ -150,7 +165,10 @@ export default function DashboardLayout({
                             </Link>
                         </NavGroup>
 
-                        <NavGroup label="Tutoriels">
+                        <NavGroup label="Formation">
+                            <Link href="/dashboard/certification">
+                                <NavItem icon={Award} label="Certification" active={isActive("/dashboard/certification")} />
+                            </Link>
                             <Link href="/dashboard/presentations">
                                 <NavItem icon={Video} label="Présentations Virtuelles" active={isActive("/dashboard/presentations")} />
                             </Link>
@@ -184,53 +202,121 @@ export default function DashboardLayout({
 
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
                 {/* Top Header */}
-                <header className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between lg:px-8 shadow-sm">
-                    <div className="flex items-center gap-3">
+                <header className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between lg:px-6 shadow-sm sticky top-0 z-30">
+                    {/* Left: Sidebar Toggle + Title (Mobile) or Welcome (Desktop) */}
+                    <div className="flex items-center gap-4 flex-1">
                         <button
                             className="lg:hidden p-2 hover:bg-gray-100 rounded-xl text-gray-600"
                             onClick={() => setSidebarOpen(!sidebarOpen)}
                         >
                             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
-                        <h1 className="text-xl font-bold text-gray-800">
-                            {pathname === "/dashboard" && "Tableau de bord"}
-                            {pathname === "/dashboard/enrolement" && "Enrôlement"}
-                            {pathname?.includes("presentations") && "Présentations"}
-                            {pathname?.includes("sales-tools") && "Outils de Vente"}
-                            {pathname?.includes("historique") && "Historique"}
-                            {pathname?.includes("clients-roles") && "Clients et Rôles"}
-                            {pathname?.includes("performance") && "Performance"}
-                            {pathname?.includes("commission-retrait") && "Commission & Retrait"}
-                        </h1>
+
+                        {/* Welcome Message - Clean & Visible */}
+                        <div className="hidden lg:flex flex-col">
+                            <h1 className="text-lg font-bold text-gray-900">
+                                {partner ? `Bonjour, ${partner.firstName} 👋` : "Bonjour !"}
+                            </h1>
+                            <p className="text-xs text-gray-500">Heureux de vous revoir sur votre espace.</p>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 mr-4">
-                            <Button variant="ghost" size="icon" className="text-gray-400 hover:text-red-500 hover:bg-red-50 relative">
-                                <Mail className="w-5 h-5" />
-                                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                            </Button>
-                        </div>
+                    {/* Right: User Actions */}
+                    <div className="flex items-center gap-6">
 
-                        <div className="flex items-center gap-3 pl-4 border-l border-gray-100">
-                            <Avatar className="w-9 h-9 border border-gray-200">
-                                <AvatarImage src={partner?.avatar} />
-                                <AvatarFallback className="bg-red-100 text-red-600">
-                                    {getInitials(partner?.firstName, partner?.lastName)}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className="hidden md:block">
-                                <p className="text-sm font-bold text-gray-800 leading-none">
-                                    {partner ? `${partner.firstName} ${partner.lastName}` : "Chargement..."}
-                                </p>
-                                {partner && (
-                                    <p className={`text-xs font-medium ${getRankColor(partner.rank)}`}>
-                                        {partner.rank}
-                                    </p>
-                                )}
-                            </div>
-                            <ChevronDown className="w-4 h-4 text-gray-400" />
-                        </div>
+                        {/* Organization Selector - Premium & Functional Look */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <div className="hidden md:flex items-center gap-3 bg-gray-50 border border-gray-200 pl-2 pr-4 py-1.5 rounded-lg cursor-pointer hover:bg-gray-100 hover:border-gray-300 transition-all shadow-sm group">
+                                    <div className="w-8 h-8 bg-white border border-gray-100 rounded-md flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                                        <Image src="/mafalia-logo.svg" alt="M" width={20} height={20} className="w-5 h-5" />
+                                    </div>
+                                    <div className="flex flex-col items-start mr-2">
+                                        <span className="text-xs text-gray-500 font-medium leading-none mb-0.5">Organisation</span>
+                                        <span className="text-sm font-bold text-gray-800 leading-none">Mafalia Partner</span>
+                                    </div>
+                                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                                </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-60">
+                                <DropdownMenuLabel className="text-gray-500 text-xs font-normal">Changer d'organisation</DropdownMenuLabel>
+                                <DropdownMenuItem className="flex justify-between items-center bg-gray-50">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 bg-white border rounded flex items-center justify-center">
+                                            <Image src="/mafalia-logo.svg" alt="M" width={14} height={14} className="w-3.5 h-3.5" />
+                                        </div>
+                                        <span className="font-medium">Mafalia Partner</span>
+                                    </div>
+                                    <Check className="w-4 h-4 text-green-600" />
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-gray-500 cursor-not-allowed">
+                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                    <span>Rejoindre une autre org</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        {/* Vertical Divider */}
+                        <div className="h-8 w-px bg-gray-200 hidden md:block"></div>
+
+                        {/* User Profile - Premium Look */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <div className="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-gray-50 transition-colors">
+                                    <div className="relative">
+                                        <Avatar className="w-10 h-10 border-2 border-white shadow-sm ring-2 ring-gray-100">
+                                            <AvatarImage src={partner?.avatar} />
+                                            <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-600 text-white font-bold">
+                                                {getInitials(partner?.firstName, partner?.lastName)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white ring-1 ring-gray-100"></div>
+                                    </div>
+
+                                    <div className="hidden md:block text-left mr-1">
+                                        <p className="text-sm font-bold text-gray-900 leading-none mb-1">
+                                            {partner ? `${partner.firstName} ${partner.lastName}` : "Chargement..."}
+                                        </p>
+                                        {partner && (
+                                            <Badge variant="secondary" className={`text-[10px] h-5 px-1.5 font-bold ${getRankBgColor(partner.rank)} ${getRankColor(partner.rank)} border-none`}>
+                                                {partner.rank}
+                                            </Badge>
+                                        )}
+                                    </div>
+                                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                                </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-64 p-2">
+                                <div className="flex items-center gap-3 p-2 mb-2 bg-gray-50 rounded-lg">
+                                    <Avatar className="w-10 h-10 border border-gray-200">
+                                        <AvatarImage src={partner?.avatar} />
+                                        <AvatarFallback className="bg-red-100 text-red-600 font-bold">
+                                            {getInitials(partner?.firstName, partner?.lastName)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="overflow-hidden">
+                                        <p className="text-sm font-bold text-gray-900 truncate">{partner?.firstName} {partner?.lastName}</p>
+                                        <p className="text-xs text-gray-500 truncate">{partner?.email}</p>
+                                    </div>
+                                </div>
+
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => router.push("/dashboard/profile")} className="cursor-pointer py-2.5">
+                                    <User className="mr-2 h-4 w-4 text-gray-500" />
+                                    <span>Mon Profil</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => router.push("/dashboard/settings")} className="cursor-pointer py-2.5">
+                                    <Settings className="mr-2 h-4 w-4 text-gray-500" />
+                                    <span>Paramètres</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer py-2.5">
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Déconnexion</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </header>
 

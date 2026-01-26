@@ -54,10 +54,10 @@ export default function PerformancePage() {
     const formatCurrency = (amount: number) => `${amount.toLocaleString("fr-FR")} FCFA`
 
     const getPositionBadge = (position: number) => {
-        if (position === 1) return { icon: "🥇", color: "bg-yellow-600 text-white" }
-        if (position === 2) return { icon: "🥈", color: "bg-gray-400 text-white" }
-        if (position === 3) return { icon: "🥉", color: "bg-amber-700 text-white" }
-        return { icon: position.toString(), color: "bg-gray-200 text-gray-700" }
+        if (position === 1) return { icon: <Trophy className="w-6 h-6" />, color: "bg-yellow-100 text-yellow-600 border border-yellow-200" }
+        if (position === 2) return { icon: <Award className="w-6 h-6" />, color: "bg-gray-100 text-gray-600 border border-gray-200" }
+        if (position === 3) return { icon: <Award className="w-6 h-6" />, color: "bg-orange-100 text-orange-700 border border-orange-200" }
+        return { icon: <span className="text-lg font-bold">{position}</span>, color: "bg-gray-50 text-gray-600 border border-gray-200" }
     }
 
     return (
@@ -160,15 +160,15 @@ export default function PerformancePage() {
                                     <div
                                         key={entry.partnerId}
                                         className={`p-4 rounded-lg border-2 transition-all ${isCurrentUser
-                                                ? "border-red-500 bg-red-50"
-                                                : entry.position <= 3
-                                                    ? "border-yellow-200 bg-yellow-50/50"
-                                                    : "border-gray-200 bg-white"
+                                            ? "border-red-500 bg-red-50"
+                                            : entry.position <= 3
+                                                ? "border-yellow-200 bg-yellow-50/50"
+                                                : "border-gray-200 bg-white"
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-4">
-                                                <div className={`w-10 h-10 rounded-full ${badge.color} flex items-center justify-center font-bold text-lg`}>
+                                                <div className={`w-12 h-12 rounded-xl ${badge.color} flex items-center justify-center shadow-sm`}>
                                                     {badge.icon}
                                                 </div>
                                                 <div>

@@ -1,3 +1,5 @@
+
+// Force re-render
 "use client"
 
 import React from "react"
@@ -42,6 +44,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { LogoCarousel } from "@/components/logo-carousel"
 import { useLanguage } from "@/contexts/language-context"
 
 export default function HomePage() {
@@ -211,11 +214,8 @@ export default function HomePage() {
             <p className="text-center text-sm font-semibold text-muted-foreground tracking-widest uppercase mb-8">
               {t.trustedBy}
             </p>
-            <div className="flex flex-wrap justify-center gap-8 md:gap-16 grayscale opacity-60">
-              {/* Placeholders for partner logos - using text for now but would be images */}
-              {["Orange", "Free", "Wave", "Ecobank", "Cofina"].map((partner) => (
-                <span key={partner} className="text-xl font-bold font-mono">{partner}</span>
-              ))}
+            <div className="mt-8">
+              <LogoCarousel />
             </div>
           </div>
         </motion.section>

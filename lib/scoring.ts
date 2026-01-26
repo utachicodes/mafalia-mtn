@@ -2,21 +2,21 @@ import type { PartnerRank, PartnerStats, LeaderboardEntry, Partner } from "./typ
 
 // Scoring weights
 const SCORING_WEIGHTS = {
-    CLIENT: 10, // Points per client
-    ACTIVE_CLIENT: 15, // Extra points for active clients
-    ORDER: 5, // Points per order
-    CONFIRMED_ORDER: 10, // Extra points for confirmed orders
-    COMPLETED_PAYMENT: 20, // Points per completed payment
-    REVENUE_MULTIPLIER: 0.001, // Points per FCFA of revenue (1 point per 1000 FCFA)
-    COMMISSION_MULTIPLIER: 0.01, // Points per FCFA of commission (1 point per 100 FCFA)
+    CLIENT: 10000, // Points per client (value approx 10k FCFA)
+    ACTIVE_CLIENT: 15000, // Extra points for active clients
+    ORDER: 5000, // Points per order
+    CONFIRMED_ORDER: 10000, // Extra points for confirmed orders
+    COMPLETED_PAYMENT: 20000, // Points per completed payment
+    REVENUE_MULTIPLIER: 1, // Points per FCFA of revenue (1 point per 1 FCFA)
+    COMMISSION_MULTIPLIER: 0, // Commission included in revenue or treated separately
 }
 
 // Rank thresholds
 const RANK_THRESHOLDS = {
     Bronze: 0,
-    Silver: 500,
-    Gold: 2000,
-    Platinum: 5000,
+    Silver: 1000000, // 1 Million
+    Gold: 5000000, // 5 Million
+    Platinum: 100000000, // 100 Million
 }
 
 /**
