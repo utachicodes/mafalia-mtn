@@ -20,6 +20,8 @@ export interface Partner {
     avatar?: string
     isCertified?: boolean
     certificationDate?: Timestamp
+    isExpert?: boolean
+    expertCertificationDate?: Timestamp
 }
 
 export interface PartnerStats {

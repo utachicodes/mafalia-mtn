@@ -7,7 +7,7 @@ export interface Question {
     category: string;
 }
 
-export const quizQuestions: Question[] = [
+export const basicQuizQuestions: Question[] = [
     // Partie 1: Vision Mafalia et infrastructure numérique
     {
         id: 1,
@@ -320,3 +320,130 @@ export const quizQuestions: Question[] = [
         correctAnswer: "A",
     },
 ];
+
+export const expertQuizQuestions: Question[] = [
+    {
+        id: 1,
+        category: "Introduction",
+        question: "Qui est Mafalia ?",
+        options: [
+            { id: "A", text: "Une simple caisse enregistreuse" },
+            { id: "B", text: "Une application de commande en ligne isolée" },
+            { id: "C", text: "Une infrastructure numérique complète pour les commerces africains" },
+            { id: "D", text: "Un logiciel uniquement pour restaurants" },
+        ],
+        correctAnswer: "C",
+    },
+    {
+        id: 2,
+        category: "Mission",
+        question: "Quelle est la mission principale de Mafalia ?",
+        options: [
+            { id: "A", text: "Vendre un logiciel à tous les commerçants" },
+            { id: "B", text: "Permettre aux commerçants de mieux gérer, vendre, décider et financer leur activité grâce à la technologie et à la donnée" },
+            { id: "C", text: "Remplacer complètement le cash par le mobile money" },
+            { id: "D", text: "Former uniquement les hôtels sur la digitalisation" },
+        ],
+        correctAnswer: "B",
+    },
+    {
+        id: 3,
+        category: "Problèmes Résolus",
+        question: "Quels sont les principaux problèmes que Mafalia aide à résoudre ?",
+        options: [
+            { id: "A", text: "Pertes et erreurs de caisse" },
+            { id: "B", text: "Manque de visibilité sur les ventes" },
+            { id: "C", text: "Gestion inefficace des stocks" },
+            { id: "D", text: "Toutes les réponses ci-dessus" },
+        ],
+        correctAnswer: "D",
+    },
+    {
+        id: 4,
+        category: "Phase de Découverte",
+        question: "Pendant la phase de découverte avec un client, que devez-vous faire ?",
+        options: [
+            { id: "A", text: "Vendre directement le produit" },
+            { id: "B", text: "Poser des questions pour comprendre le client et ses problèmes" },
+            { id: "C", text: "Ignorer les problèmes du client et montrer toutes les fonctionnalités" },
+            { id: "D", text: "Parler uniquement du prix" },
+        ],
+        correctAnswer: "B",
+    },
+    {
+        id: 5,
+        category: "Moyens de Paiement",
+        question: "Quels sont les moyens de paiement que Mafalia peut gérer ?",
+        options: [
+            { id: "A", text: "Cash uniquement" },
+            { id: "B", text: "Carte bancaire uniquement" },
+            { id: "C", text: "Cash, mobile money, carte bancaire" },
+            { id: "D", text: "Aucun" },
+        ],
+        correctAnswer: "C",
+    },
+    {
+        id: 6,
+        category: "Services pour Hôtels",
+        question: "Quels services Mafalia peut-elle centraliser pour un hôtel ?",
+        options: [
+            { id: "A", text: "Gestion des réservations uniquement" },
+            { id: "B", text: "Encaissement multi-services, suivi par service, rapports automatiques" },
+            { id: "C", text: "Communication avec les clients uniquement" },
+            { id: "D", text: "Gestion du personnel uniquement" },
+        ],
+        correctAnswer: "B",
+    },
+    {
+        id: 7,
+        category: "Technique Commerciale",
+        question: "Lors d’un rendez-vous commercial, quel est l’objectif de la reformulation ?",
+        options: [
+            { id: "A", text: "Montrer que vous savez tout sur le client" },
+            { id: "B", text: "Aligner Mafalia sur les vrais enjeux et problèmes du client" },
+            { id: "C", text: "Vendre immédiatement le produit" },
+            { id: "D", text: "Poser des questions techniques uniquement" },
+        ],
+        correctAnswer: "B",
+    },
+    {
+        id: 8,
+        category: "Inclusion Financière",
+        question: "Comment Mafalia contribue-t-elle à l’inclusion financière des commerçants ?",
+        options: [
+            { id: "A", text: "En supprimant l’usage du cash" },
+            { id: "B", text: "En offrant des crédits basés sur les données de vente et la performance" },
+            { id: "C", text: "En forçant les commerçants à ouvrir un compte bancaire" },
+            { id: "D", text: "En créant des cartes de fidélité" },
+        ],
+        correctAnswer: "B",
+    },
+    {
+        id: 9,
+        category: "Valeur Ajoutée",
+        question: "Quelle est la valeur ajoutée clé pour un hôtel utilisant Mafalia ?",
+        options: [
+            { id: "A", text: "Pilotage de l’hôtel comme une entreprise structurée" },
+            { id: "B", text: "Remplacement du personnel" },
+            { id: "C", text: "Augmentation automatique des clients" },
+            { id: "D", text: "Suppression du suivi des ventes" },
+        ],
+        correctAnswer: "A",
+    },
+    {
+        id: 10,
+        category: "Gestion des Objections",
+        question: "Quelle est la meilleure réponse à un client qui dit : « Je ne suis pas à l’aise avec la technologie » ?",
+        options: [
+            { id: "A", text: "« Alors ce n’est pas pour vous »" },
+            { id: "B", text: "« Mafalia est conçue pour des utilisateurs sans compétences techniques. En moins d’une heure, vous êtes opérationnel »" },
+            { id: "C", text: "« Vous devez suivre une formation de 2 semaines »" },
+            { id: "D", text: "« Vous pouvez demander à votre comptable »" },
+        ],
+        correctAnswer: "B",
+    },
+];
+
+// Helper to get default export for backward compatibility relative to imports
+// but ideally we switch to named imports
+export const quizQuestions = basicQuizQuestions;
