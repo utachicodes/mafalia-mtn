@@ -62,6 +62,55 @@ export default function SalesToolsPage() {
                         </div>
                     </div>
                 </div>
+
+                {/* Argumentaire Commercial Card */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 text-white relative overflow-hidden">
+                        <div className="relative z-10 flex items-start justify-between">
+                            <div>
+                                <div className="p-3 bg-white/10 rounded-xl w-fit mb-4">
+                                    <Briefcase className="w-6 h-6 text-white" />
+                                </div>
+                                <h3 className="text-xl font-bold mb-1">Argumentaire Commercial</h3>
+                                <p className="text-gray-300 text-sm">Scripts de vente et points clés</p>
+                            </div>
+                        </div>
+                        {/* Decorative pattern */}
+                        <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+                    </div>
+
+                    <div className="p-6">
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-4 p-4 rounded-xl border border-dashed border-gray-200 bg-gray-50/50">
+                                <div className="w-16 h-20 bg-white shadow-sm border border-gray-100 rounded flex items-center justify-center">
+                                    <span className="text-xs font-bold text-gray-700">PDF</span>
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="font-medium text-gray-900">Argumentaire Complet</h4>
+                                    <p className="text-sm text-gray-500">PDF • Document Officiel</p>
+                                </div>
+                                <Button size="icon" variant="ghost" className="text-gray-400 hover:text-gray-900">
+                                    <Download className="w-5 h-5" />
+                                </Button>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <Button variant="outline" className="w-full justify-between group hover:border-gray-300 hover:bg-gray-50" asChild>
+                                    <a href="/documents/argumentaire-commercial-mafalia.pdf" target="_blank" rel="noopener noreferrer">
+                                        Aperçu
+                                        <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-gray-900" />
+                                    </a>
+                                </Button>
+                                <Button className="w-full justify-between bg-gray-900 hover:bg-black text-white group" asChild>
+                                    <a href="/documents/argumentaire-commercial-mafalia.pdf" download="ARGUMENTAIRE_COMMERCIAL_MAFALIA.pdf">
+                                        Télécharger
+                                        <Download className="w-4 h-4 text-gray-400 group-hover:text-white" />
+                                    </a>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
