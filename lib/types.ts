@@ -9,6 +9,7 @@ export interface Partner {
     email: string
     firstName: string
     lastName: string
+    businessName?: string
     phone: string
     country: string
     region: string
