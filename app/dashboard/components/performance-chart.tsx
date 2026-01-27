@@ -54,7 +54,7 @@ export function PerformanceChart() {
                                 Clients
                             </TabsTrigger>
                             <TabsTrigger value="semaine" className="text-xs">
-                                Commandes
+                                Revenus
                             </TabsTrigger>
                         </TabsList>
                     </Tabs>
@@ -89,7 +89,7 @@ export function PerformanceChart() {
                                     activeDot={{ r: 6 }}
                                 />
                                 <Line
-                                    name="Commandes"
+                                    name="Revenus"
                                     type="monotone"
                                     dataKey="value2"
                                     stroke="#CBD5E1"
