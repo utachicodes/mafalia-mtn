@@ -51,25 +51,21 @@ export function StatsGrid() {
         return `${amount.toLocaleString("fr-FR")} FCFA`
     }
 
+    const conversionRate = stats?.totalOrders
+        ? Math.round((stats.confirmedOrders / stats.totalOrders) * 100)
+        : 0
+
     const statsCards: StatCard[] = [
         {
-            label: "Clients Enrôlés",
-            value: loading ? "..." : stats?.totalClients.toString() || "0",
-            icon: Users,
-            color: "text-red-500",
-            bg: "bg-red-50",
-            border: "border-red-100",
-        },
-        {
-            label: "Commandes Générées",
+            label: "Abonnements initiés",
             value: loading ? "..." : stats?.totalOrders.toString() || "0",
             icon: ShoppingBag,
-            color: "text-orange-500",
-            bg: "bg-orange-50",
-            border: "border-orange-100",
+            color: "text-blue-500",
+            bg: "bg-blue-50",
+            border: "border-blue-100",
         },
         {
-            label: "Confirmées",
+            label: "Abonnements payés",
             value: loading ? "..." : stats?.confirmedOrders.toString() || "0",
             icon: CheckCircle,
             color: "text-amber-500",
@@ -77,25 +73,33 @@ export function StatsGrid() {
             border: "border-amber-100",
         },
         {
-            label: "Actives",
+            label: "Abonnements actifs",
             value: loading ? "..." : stats?.activeOrders.toString() || "0",
             icon: Activity,
-            color: "text-blue-500",
-            bg: "bg-blue-50",
-            border: "border-blue-100",
-        },
-        {
-            label: "Paiements Complétés",
-            value: loading ? "..." : stats?.completedPayments.toString() || "0",
-            icon: CreditCard,
             color: "text-green-500",
             bg: "bg-green-50",
             border: "border-green-100",
         },
         {
+            label: "Taux de conversion",
+            value: loading ? "..." : `${conversionRate}%`,
+            icon: TrendingUp,
+            color: "text-purple-500",
+            bg: "bg-purple-50",
+            border: "border-purple-100",
+        },
+        {
+            label: "Paiements Complétés",
+            value: loading ? "..." : stats?.completedPayments.toString() || "0",
+            icon: CreditCard,
+            color: "text-indigo-500",
+            bg: "bg-indigo-50",
+            border: "border-indigo-100",
+        },
+        {
             label: "Revenu Généré",
             value: loading ? "..." : formatCurrency(stats?.totalRevenue || 0),
-            icon: TrendingUp,
+            icon: Wallet,
             color: "text-emerald-500",
             bg: "bg-emerald-50",
             border: "border-emerald-100",
