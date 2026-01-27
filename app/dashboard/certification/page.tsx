@@ -12,6 +12,10 @@ import { CertificateTemplate } from "./components/certificate-template";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
+// Add missing imports
+import { AlertCircle } from "lucide-react";
+import { toast } from "sonner";
+
 export default function CertificationPage() {
     const router = useRouter();
     const { partner } = useAuth();
@@ -20,6 +24,7 @@ export default function CertificationPage() {
     const [isExpert, setIsExpert] = useState(false);
     const [expertDate, setExpertDate] = useState<string | null>(null);
     const certificateRef = useRef<HTMLDivElement>(null);
+    const [isGenerating, setIsGenerating] = useState(false);
 
     useEffect(() => {
         // Check local storage for certification status (fallback)
@@ -57,13 +62,30 @@ export default function CertificationPage() {
     };
 
     const handleDownloadCertificate = async () => {
-        if (!certificateRef.current) return;
+        if (!certificateRef.current) {
+            toast.error("Erreur technique : Le modèle de certificat est introuvable.");
+            return;
+        }
+
+        setIsGenerating(true);
+        toast.info("Génération du certificat en cours...");
 
         try {
+            // Wait a brief moment to ensure rendering
+            await new Promise(resolve => setTimeout(resolve, 100));
+
             const canvas = await html2canvas(certificateRef.current, {
                 scale: 2, // Higher quality
                 useCORS: true,
-                backgroundColor: "#ffffff"
+                backgroundColor: "#ffffff",
+                logging: false,
+                onclone: (clonedDoc) => {
+                    // Ensure the cloned element is visible
+                    const clonedElement = clonedDoc.getElementById('certificate-download');
+                    if (clonedElement) {
+                        clonedElement.style.display = 'flex';
+                    }
+                }
             });
 
             const imgData = canvas.toDataURL("image/png");
@@ -78,8 +100,13 @@ export default function CertificationPage() {
 
             pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
             pdf.save("Certificat_Partenaire_Mafalia.pdf");
+
+            toast.success("Certificat téléchargé avec succès !");
         } catch (err) {
             console.error("Error generating PDF", err);
+            toast.error("Impossible de générer le certificat. Veuillez réessayer.");
+        } finally {
+            setIsGenerating(false);
         }
     };
 
@@ -133,8 +160,19 @@ export default function CertificationPage() {
                     </CardContent>
                     <CardContent className="pt-0 mt-auto">
                         {isCertified ? (
-                            <Button onClick={handleDownloadCertificate} variant="outline" className="w-full border-green-200 text-green-700 hover:bg-green-50 hover:text-green-800">
-                                <Download className="mr-2 h-4 w-4" /> Télécharger Certificat
+                            <Button
+                                onClick={handleDownloadCertificate}
+                                disabled={isGenerating}
+                                variant="outline"
+                                className="w-full border-green-200 text-green-700 hover:bg-green-50 hover:text-green-800"
+                            >
+                                {isGenerating ? (
+                                    <>Génération...</>
+                                ) : (
+                                    <>
+                                        <Download className="mr-2 h-4 w-4" /> Télécharger Certificat
+                                    </>
+                                )}
                             </Button>
                         ) : (
                             <Button onClick={() => handleStartQuiz('basic')} className="w-full bg-red-600 hover:bg-red-700 text-white">
@@ -240,7 +278,7 @@ export default function CertificationPage() {
             </Card>
 
             {/* Hidden Certificate Template for PDF Generation */}
-            <div className="overflow-hidden h-0 w-0">
+            <div className="absolute top-[-9999px] left-[-9999px]">
                 <CertificateTemplate
                     ref={certificateRef}
                     partnerName={`${partner.firstName} ${partner.lastName}`}
@@ -253,4 +291,3 @@ export default function CertificationPage() {
 }
 
 // Add missing imports
-import { AlertCircle } from "lucide-react";
